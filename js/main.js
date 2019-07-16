@@ -91,7 +91,7 @@ var overlayImage = document.querySelector('.img-upload__overlay');
 var closeBtn = overlayImage.querySelector('#upload-cancel');
 
 var overlayEscPress = function (evt) {
-  if (evt.keyCode === ESC_KEYCODE) {
+  if (document.activeElement !== comment && evt.keyCode === ESC_KEYCODE) {
     overlayClose();
   }
 };
@@ -113,7 +113,6 @@ function overlayClose() {
 
 photoFeild.addEventListener('change', overlayOpen);
 
-
 closeBtn.addEventListener('click', overlayClose);
 
 closeBtn.addEventListener('keydown', function (evt) {
@@ -124,7 +123,7 @@ closeBtn.addEventListener('keydown', function (evt) {
 
 // маштабирование фото и кнопки + -
 
-var STEP_AND_MIN = 25;
+var STEP = 25;
 var buttonSmaller = document.querySelector('.scale__control--smaller');
 var buttonBigger = document.querySelector('.scale__control--bigger');
 var inputValue = document.querySelector('.scale__control--value');
@@ -132,25 +131,25 @@ var imageBlock = document.querySelector('.img-upload__preview');
 var image = document.querySelector('.img-upload__preview img');
 
 buttonSmaller.addEventListener('click', function () {
-  var currentValue = parseInt(inputValue.value, 2);
-  if (currentValue <= STEP_AND_MIN) {
-    currentValue = STEP_AND_MIN;
+  var currentValue = parseInt(inputValue.value, 10);
+  if (currentValue <= STEP) {
+    currentValue = STEP;
   } else {
-    currentValue -= STEP_AND_MIN;
+    currentValue -= STEP;
   }
   inputValue.value = currentValue + '%';
-  imageBlock.style.transform = 'scale(' + parseInt(inputValue.value, 2) / 100 + ')';
+  imageBlock.style.transform = 'scale(' + parseInt(inputValue.value, 10) / 100 + ')';
 });
 
 buttonBigger.addEventListener('click', function () {
-  var currentValue = parseInt(inputValue.value, 2);
+  var currentValue = parseInt(inputValue.value, 10);
   if (currentValue >= 100) {
     currentValue = 100;
   } else {
-    currentValue += STEP_AND_MIN;
+    currentValue += STEP;
   }
   inputValue.value = currentValue + '%';
-  imageBlock.style.transform = 'scale(' + parseInt(inputValue.value, 2) / 100 + ')';
+  imageBlock.style.transform = 'scale(' + parseInt(inputValue.value, 10) / 100 + ')';
 });
 
 // эффекты
@@ -172,12 +171,36 @@ effect.addEventListener('change', function (evt) {
 });
 
 // pin
-var blockPin = document.querySelector('.img-upload__effect-level');
+var blockPin = overlayImage.querySelector('.img-upload__effect-level');
 var pin = blockPin.querySelector('.effect-level__pin');
 var depth = blockPin.querySelector('.effect-level__depth');
 var pinValue = blockPin.querySelector('.effect-level__value');
 
+pin.addEventListener('mouseup', function () {
+  pin.style.left = '100%';
+  depth.style.width = pin.style.left;
+  pinValue.value = pin.style.left;
+});
 
-pin.style.left = '100%';
-depth.style.width = pin.style.left;
-pinValue.value = pin.style.left;
+
+// коментарии
+var comment = overlayImage.querySelector('.text__description');
+comment.addEventListener('invalid', function () {
+  if (comment.validity.tooShort) {
+    comment.setCustomValidity('Комментарий должно состоять минимум из 2-х символов');
+  } else {
+    comment.setCustomValidity('');
+  }
+});
+// else if (comment.validity.tooLong) {
+// comment.setCustomValidity('Максимальная длина комментария 140 символов');
+// }
+
+comment.addEventListener('input', function (evt) {
+  var target = evt.target;
+  if (target.value.length > 2) {
+    target.setCustomValidity('Комментарий должно состоять минимум из 2-х символов');
+  } else {
+    target.setCustomValidity('');
+  }
+});
