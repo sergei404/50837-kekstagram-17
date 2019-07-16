@@ -180,7 +180,7 @@ pin.addEventListener('mouseup', function () {
   pin.style.left = '100%';
   depth.style.width = pin.style.left;
   pinValue.value = pin.style.left;
-})
+});
 
 
 // коментарии
@@ -188,13 +188,13 @@ var comment = overlayImage.querySelector('.text__description');
 comment.addEventListener('invalid', function () {
   if (comment.validity.tooShort) {
     comment.setCustomValidity('Комментарий должно состоять минимум из 2-х символов');
-  } // else if (comment.validity.tooLong) {
-  // comment.setCustomValidity('Максимальная длина комментария 140 символов');
-  // }
-  else {
+  } else {
     comment.setCustomValidity('');
   }
 });
+// else if (comment.validity.tooLong) {
+// comment.setCustomValidity('Максимальная длина комментария 140 символов');
+// }
 
 comment.addEventListener('input', function (evt) {
   var target = evt.target;
