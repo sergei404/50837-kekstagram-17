@@ -1,90 +1,7 @@
 'use strict';
 
-var COUNT = 25;
-
-//  перемешать массив
-
-function shuffle(arr) {
-  for (var i = arr.length - 1; i > 0; i--) {
-    var rand = Math.floor(Math.random() * (i + 1));
-    var temp = arr[i];
-    arr[i] = arr[rand];
-    arr[rand] = temp;
-  }
-  return arr;
-}
-
-//  получить случайное число
-
-var getRandomNumber = function (min, max) {
-  return min + Math.floor(Math.random() * (max + 1 - min));
-};
-
-var messages = [
-  'Всё отлично!',
-  'В целом всё неплохо. Но не всё.',
-  'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
-  'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
-  'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
-  'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
-];
-var names = ['Лао-Цзы', 'Ашшурбанапал', 'Костя', 'Шамашшумукин ', 'Жан-Батист'];
-
-//  заполняем массив comments
-
-function getComments() {
-  var comments = [];
-  for (var i = 0; i < COUNT; i++) {
-    comments.push({
-      avatar: 'img/avatar-' + getRandomNumber(1, 6) + '.svg',
-      name: shuffle(names).slice(0, 1).toString(),
-      message: shuffle(messages).slice(0, getRandomNumber(1, 2)).join()
-    });
-  }
-  return comments;
-}
-
-//  массив фотографий пользователей, вкл лайки, комментарии и фото
-
-function getPhotos() {
-  var photos = [];
-  for (var i = 0; i < COUNT; i++) {
-    photos.push({
-      url: 'photos/' + (i + 1) + '.jpg',
-      likes: getRandomNumber(15, 200),
-      comments: shuffle(getComments()).slice(0, getRandomNumber(1, 3))
-    });
-  }
-  return photos;
-}
-
-getPhotos();
-
-var similarPictures = document.querySelector('.pictures');
-var photoTemplate = document.querySelector('#picture').content;
-
-
-function renderPhoto(pht) {
-  var photoElem = photoTemplate.cloneNode(true);
-
-  photoElem.querySelector('img').src = pht.url;
-  photoElem.querySelector('.picture__comments').textContent = pht.comments.length;
-  photoElem.querySelector('.picture__likes').textContent = pht.likes;
-
-  return photoElem;
-}
-
-var fragment = document.createDocumentFragment();
-
-for (var j = 0; j < getPhotos().length; j++) {
-  fragment.appendChild(renderPhoto(getPhotos()[j]));
-}
-
-similarPictures.appendChild(fragment);
-
 // показ и закрытие формы редактирования изображения
 // удалять классы эффектов при закрытии
-
 var ESC_KEYCODE = 27;
 var photoFeild = document.querySelector('.img-upload__input');
 var overlayImage = document.querySelector('.img-upload__overlay');
@@ -122,7 +39,6 @@ closeBtn.addEventListener('keydown', function (evt) {
 });
 
 // маштабирование фото и кнопки + -
-
 var STEP = 25;
 var buttonSmaller = document.querySelector('.scale__control--smaller');
 var buttonBigger = document.querySelector('.scale__control--bigger');
@@ -153,10 +69,15 @@ buttonBigger.addEventListener('click', function () {
 });
 
 // эффекты
-
 var effect = document.querySelector('.img-upload__effects');
-var effectRange = document.querySelector('.img-upload__effect-level');
+var blockPin = overlayImage.querySelector('.img-upload__effect-level');
+var pin = blockPin.querySelector('.effect-level__pin');
+var depth = blockPin.querySelector('.effect-level__depth');
+var effValue = blockPin.querySelector('.effect-level__value');
 
+var pinEnd = 455 + 'px';
+pin.style.left = pinEnd;
+depth.style.width = pin.style.left;
 var currenEffect = 'none';
 effect.addEventListener('change', function (evt) {
   var eff = evt.target.value;
@@ -164,22 +85,82 @@ effect.addEventListener('change', function (evt) {
   image.classList.add('effects__preview--' + eff);
   currenEffect = eff;
   if (currenEffect === 'none') {
-    effectRange.style.display = 'none';
+    blockPin.style.display = 'none';
+    image.style.filter = currenEffect;
   } else {
-    effectRange.style.display = 'block';
+    blockPin.style.display = 'block';
+    pin.style.left = pinEnd;
+    depth.style.width = pin.style.left;
+    getEffects();
   }
 });
 
+function getEffects() {
+  var num = parseInt(pin.style.left, 10) / 455;
+  if (currenEffect === 'chrome') {
+    image.style.filter = 'grayscale(' + num + ')';
+  } else if (currenEffect === 'sepia') {
+    image.style.filter = currenEffect + '(' + num + ')';
+  } else if (currenEffect === 'marvin') {
+    image.style.filter = 'invert(' + num * 100 + '%)';
+  } else if (currenEffect === 'phobos') {
+    image.style.filter = 'blur(' + num * 3 + 'px)';
+  } else if (currenEffect === 'heat') {
+    image.style.filter = 'brightness(' + num + ')';
+  }
+}
 // pin
-var blockPin = overlayImage.querySelector('.img-upload__effect-level');
-var pin = blockPin.querySelector('.effect-level__pin');
-var depth = blockPin.querySelector('.effect-level__depth');
-var pinValue = blockPin.querySelector('.effect-level__value');
+pin.addEventListener('mousedown', function (evt) {
+  evt.preventDefault();
 
-pin.addEventListener('mouseup', function () {
-  pin.style.left = '100%';
-  depth.style.width = pin.style.left;
-  pinValue.value = pin.style.left;
+  var startCoords = {
+    x: evt.clientX
+  };
+
+  var dragged = false;
+
+  function onMouseMove(moveEvt) {
+    moveEvt.preventDefault();
+    dragged = true;
+
+    var shift = {
+      x: startCoords.x - moveEvt.clientX
+    };
+
+    startCoords = {
+      x: moveEvt.clientX
+    };
+
+    pin.style.left = (pin.offsetLeft - shift.x) + 'px';
+    if (parseInt(pin.style.left, 10) <= 0) {
+      pin.style.left = 0;
+    } else if (parseInt(pin.style.left, 10) >= parseInt(pinEnd, 10)) {
+      pin.style.left = pinEnd;
+    }
+    depth.style.width = pin.style.left;
+    effValue.value = parseInt(depth.style.width, 10);
+    getEffects();
+  }
+
+  function onMouseUp(upEvt) {
+    upEvt.preventDefault();
+
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+
+    if (dragged) {
+      var onClickPreventDefault = function () {
+        // evt.preventDefault();
+        pin.removeEventListener('click', onClickPreventDefault);
+      };
+      pin.addEventListener('click', onClickPreventDefault);
+    }
+
+    getEffects();
+  }
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
 });
 
 
@@ -190,17 +171,5 @@ comment.addEventListener('invalid', function () {
     comment.setCustomValidity('Комментарий должно состоять минимум из 2-х символов');
   } else {
     comment.setCustomValidity('');
-  }
-});
-// else if (comment.validity.tooLong) {
-// comment.setCustomValidity('Максимальная длина комментария 140 символов');
-// }
-
-comment.addEventListener('input', function (evt) {
-  var target = evt.target;
-  if (target.value.length > 2) {
-    target.setCustomValidity('Комментарий должно состоять минимум из 2-х символов');
-  } else {
-    target.setCustomValidity('');
   }
 });
