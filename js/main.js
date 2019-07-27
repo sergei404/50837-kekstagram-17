@@ -38,7 +38,7 @@
     } else if (currenEffect === 'phobos') {
       window.image.style.filter = 'blur(' + num * 3 + 'px)';
     } else if (currenEffect === 'heat') {
-      window.image.style.filter = 'brightness(' + num * 3 + ')';
+      window.image.style.filter = 'brightness(' + (1 + num * 2) + ')';
     }
   }
 

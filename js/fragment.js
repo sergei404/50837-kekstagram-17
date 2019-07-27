@@ -15,11 +15,15 @@
     return photoElem;
   }
 
-  var fragment = document.createDocumentFragment();
+  window.load(function (photos) {
+    var fragment = document.createDocumentFragment();
+    photos = window.utils.shuffle(photos);
+    for (var i = 0; i < photos.length; i++) {
+      fragment.appendChild(renderPhoto(photos[i]));
+    }
+    similarPictures.appendChild(fragment);
 
-  for (var j = 0; j < window.getPhotos().length; j++) {
-    fragment.appendChild(renderPhoto(window.getPhotos()[j]));
-  }
 
-  similarPictures.appendChild(fragment);
+  });
+
 })();
