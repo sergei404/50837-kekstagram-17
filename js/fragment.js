@@ -89,5 +89,6 @@
   }
 
   window.load(onSuccess, onError);
+  window.similarPictures = similarPictures;
 
 })();
