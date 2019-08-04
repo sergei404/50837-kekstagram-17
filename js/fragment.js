@@ -7,8 +7,7 @@
   var photoData = [];
 
   function renderPhoto(pht) {
-    var photoElem = photoTemplate.cloneNode(true);
-
+    var photoElem = photoTemplate.querySelector('.picture').cloneNode(true);
     photoElem.querySelector('img').src = pht.url;
     photoElem.querySelector('.picture__comments').textContent = pht.comments.length;
     photoElem.querySelector('.picture__likes').textContent = pht.likes;
@@ -22,6 +21,7 @@
 
 
   var lastTimeout;
+
   function renderByFilter(filter) {
     if (lastTimeout) {
       window.clearTimeout(lastTimeout);
@@ -63,8 +63,16 @@
 
   function photosRenders(photos) {
     var fragment = document.createDocumentFragment();
+
     for (var i = 0; i < photos.length; i++) {
-      fragment.appendChild(renderPhoto(photos[i]));
+      var pictureElem = renderPhoto(photos[i]);
+      (function () {
+        var j = i;
+        pictureElem.addEventListener('click', function () {
+          window.onViewAnyPhoto(photos[j]);
+        });
+      })();
+      fragment.appendChild(pictureElem);
     }
     similarPictures.appendChild(fragment);
   }
