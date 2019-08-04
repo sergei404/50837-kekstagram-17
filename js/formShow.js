@@ -14,7 +14,6 @@
     }
   };
 
-
   function overlayOpen() {
     overlayImage.classList.remove('hidden');
     document.addEventListener('keydown', overlayEscPress);
