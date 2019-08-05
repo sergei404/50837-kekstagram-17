@@ -4,6 +4,7 @@
   var MAX_HASHTAG_COUNT = 5;
   var MIN_HASHTAG_LENGTH = 2;
   var MAX_HASHTAG_LENGTH = 20;
+  var form = window.similarPictures.querySelector('.img-upload__form');
   var comment = window.overlayImage.querySelector('.text__description');
   var hashtag = window.overlayImage.querySelector('.text__hashtags');
 
@@ -11,7 +12,7 @@
     var targetValue = evt.target.value.toLowerCase();
     var hashtags = targetValue.split(' ');
 
-    var cleanArray = hashtags.filter(Boolean); // hashtags.filter(v=>v!='');
+    var cleanArray = hashtags.filter(Boolean);
     evt.target.setCustomValidity('');
     if (cleanArray.length > MAX_HASHTAG_COUNT) {
       evt.target.setCustomValidity('Не может быть больше 5 хештегов');
@@ -30,8 +31,8 @@
         evt.target.setCustomValidity('Длина хештега не должна быть меньше 2 символов');
         return;
       }
-      if (cleanArray.some(function (item, arr) {
-        return item === arr[0];
+      if (cleanArray.some(function (item, index, arr) {
+        return index !== i && item === arr[i];
       })) {
         evt.target.setCustomValidity('Хештеги не должны повторяться');
       }
@@ -46,6 +47,14 @@
     }
   });
 
+  form.addEventListener('submit', function (evt) {
+    window.upload(new FormData(form), function () {
+      window.onResetEffect();
+    });
+    evt.preventDefault();
+  });
+
   window.comment = comment;
+  window.hashtag = hashtag;
 
 })();

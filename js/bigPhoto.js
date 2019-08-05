@@ -37,13 +37,13 @@
     return commentElem;
   }
 
-  function commentsRender(photos) {
+  function commentsRender(comments) {
     var fragment = document.createDocumentFragment();
 
-    for (var i = 0; i < photos.length; i++) {
-      fragment.appendChild(renderComment(photos[i]));
+    for (var i = 0; i < comments.length; i++) {
+      fragment.appendChild(renderComment(comments[i]));
     }
-
+    commentListElem.innerHTML = '';
     commentListElem.appendChild(fragment);
   }
 

@@ -9,7 +9,7 @@
   var closeBtn = overlayImage.querySelector('#upload-cancel');
 
   var overlayEscPress = function (evt) {
-    if (document.activeElement !== window.comment && evt.keyCode === ESC_KEYCODE) {
+    if (document.activeElement !== window.hashtag && evt.keyCode === ESC_KEYCODE) {
       overlayClose();
     }
   };
@@ -20,12 +20,21 @@
   }
 
   function overlayClose() {
-    overlayImage.classList.add('hidden');
     document.removeEventListener('change', overlayOpen);
     document.removeEventListener('keydown', overlayEscPress);
+    onResetEffect();
+  }
+
+  function onResetEffect() {
+    overlayImage.classList.add('hidden');
     photoFeild.value = '';
     window.image.removeAttribute('class');
     window.image.removeAttribute('style');
+    window.objEff.pin.style.left = window.objEff.PIN_MAX;
+    window.objEff.depth.style.width = window.objEff.pin.style.left;
+    window.objEff.blockPin.style.display = 'block';
+    window.imageBlock.style.transform = '';
+
   }
 
   photoFeild.addEventListener('change', overlayOpen);
@@ -39,5 +48,8 @@
   });
 
   window.overlayImage = overlayImage;
+  window.photoFeild = photoFeild;
+  window.onResetEffect = onResetEffect;
+  window.ESC_KEYCODE = ESC_KEYCODE;
 
 })();

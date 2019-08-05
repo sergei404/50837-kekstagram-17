@@ -4,7 +4,7 @@
   // pin
   var pin = window.objEff.pin;
   var depth = window.objEff.depth;
-  var pinEnd = window.objEff.pinEnd;
+  var pinEnd = window.objEff.PIN_MAX;
   var effValue = window.objEff.blockPin.querySelector('.effect-level__value');
 
   pin.addEventListener('mousedown', function (evt) {

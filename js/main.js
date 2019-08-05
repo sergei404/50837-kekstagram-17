@@ -6,12 +6,14 @@
   var blockPin = window.overlayImage.querySelector('.img-upload__effect-level');
   var pin = blockPin.querySelector('.effect-level__pin');
   var depth = blockPin.querySelector('.effect-level__depth');
-
-  var pinEnd = 455 + 'px';
-  pin.style.left = pinEnd;
+  var PIN_MAX = 455 + 'px';
+  pin.style.left = PIN_MAX;
   depth.style.width = pin.style.left;
   var currenEffect = 'none';
-  effect.addEventListener('change', function (evt) {
+
+  effect.addEventListener('change', currenToggle);
+
+  function currenToggle(evt) {
     var eff = evt.target.value;
     window.image.classList.remove('effects__preview--' + currenEffect);
     window.image.classList.add('effects__preview--' + eff);
@@ -21,11 +23,11 @@
       window.image.style.filter = currenEffect;
     } else {
       blockPin.style.display = 'block';
-      pin.style.left = pinEnd;
+      pin.style.left = PIN_MAX;
       depth.style.width = pin.style.left;
       getEffects();
     }
-  });
+  }
 
   function getEffects() {
     var num = parseInt(pin.style.left, 10) / 455;
@@ -43,10 +45,11 @@
   }
 
   window.objEff = {
+    effect: effect,
     pin: pin,
     depth: depth,
     getEffects: getEffects,
-    pinEnd: pinEnd,
+    PIN_MAX: PIN_MAX,
     blockPin: blockPin
   };
 
