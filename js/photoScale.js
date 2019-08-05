@@ -31,6 +31,8 @@
     imageBlock.style.transform = 'scale(' + parseInt(inputValue.value, 10) / 100 + ')';
   });
 
+  window.imageBlock = imageBlock;
   window.image = image;
+  window.inputValue = inputValue;
 
 })();
