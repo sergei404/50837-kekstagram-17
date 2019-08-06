@@ -25,6 +25,7 @@
 
   function onAchievement() {
     var success = templateSuccess.querySelector('.success').cloneNode(true);
+    main.appendChild(success);
     var buttonSuccess = success.querySelector('.success__button');
 
     buttonSuccess.addEventListener('click', onPopupSuccessClose);
@@ -43,12 +44,11 @@
       document.removeEventListener('click', onPopupSuccessClose);
       document.removeEventListener('keydown', onPopupSuccessClose);
     }
-
-    main.appendChild(success);
   }
 
   function onFailing() {
     var error = templateError.querySelector('.error').cloneNode(true);
+    main.appendChild(error);
     var buttonErrorOne = error.querySelectorAll('.error__button')[0];
     var buttonErrorTwo = error.querySelectorAll('.error__button')[1];
 
@@ -70,7 +70,6 @@
       document.removeEventListener('click', onPopupErrorClose);
       document.removeEventListener('keydown', onPopupErrorClose);
     }
-    main.appendChild(error);
   }
 
 })();
