@@ -9,18 +9,38 @@
   var PIN_MAX = 455 + 'px';
   pin.style.left = PIN_MAX;
   depth.style.width = pin.style.left;
-  var currenEffect = 'none';
+  var currentEffect = 'none';
+
+  window.photoFeild.addEventListener('change', handleFiles);
+
+  function handleFiles() {
+    var fileList = window.photoFeild.files;
+    for (var i = 0; i < fileList.length; i++) {
+      var file = fileList[0];
+      if (!file.type.startsWith('image/')) {
+        continue;
+      }
+
+      var reader = new FileReader();
+      reader.onload = (function (image) {
+        return function (evt) {
+          image.src = evt.target.result;
+        };
+      })(window.image);
+      reader.readAsDataURL(file);
+    }
+  }
 
   effect.addEventListener('change', currenToggle);
 
   function currenToggle(evt) {
     var eff = evt.target.value;
-    window.image.classList.remove('effects__preview--' + currenEffect);
+    window.image.classList.remove('effects__preview--' + currentEffect);
     window.image.classList.add('effects__preview--' + eff);
-    currenEffect = eff;
-    if (currenEffect === 'none') {
+    currentEffect = eff;
+    if (currentEffect === 'none') {
       blockPin.style.display = 'none';
-      window.image.style.filter = currenEffect;
+      window.image.style.filter = currentEffect;
     } else {
       blockPin.style.display = 'block';
       pin.style.left = PIN_MAX;
@@ -31,15 +51,15 @@
 
   function getEffects() {
     var num = parseInt(pin.style.left, 10) / 455;
-    if (currenEffect === 'chrome') {
+    if (currentEffect === 'chrome') {
       window.image.style.filter = 'grayscale(' + num + ')';
-    } else if (currenEffect === 'sepia') {
-      window.image.style.filter = currenEffect + '(' + num + ')';
-    } else if (currenEffect === 'marvin') {
+    } else if (currentEffect === 'sepia') {
+      window.image.style.filter = currentEffect + '(' + num + ')';
+    } else if (currentEffect === 'marvin') {
       window.image.style.filter = 'invert(' + num * 100 + '%)';
-    } else if (currenEffect === 'phobos') {
+    } else if (currentEffect === 'phobos') {
       window.image.style.filter = 'blur(' + num * 3 + 'px)';
-    } else if (currenEffect === 'heat') {
+    } else if (currentEffect === 'heat') {
       window.image.style.filter = 'brightness(' + (1 + num * 2) + ')';
     }
   }

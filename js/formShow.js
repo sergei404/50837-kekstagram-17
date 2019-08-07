@@ -9,8 +9,10 @@
   var closeBtn = overlayImage.querySelector('#upload-cancel');
 
   var overlayEscPress = function (evt) {
-    if (document.activeElement !== window.hashtag && evt.keyCode === ESC_KEYCODE) {
-      overlayClose();
+    if (evt.keyCode === ESC_KEYCODE) {
+      if (document.activeElement !== window.hashtag && document.activeElement !== window.comment) {
+        overlayClose();
+      }
     }
   };
 
