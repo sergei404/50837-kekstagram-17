@@ -4,8 +4,8 @@
   var templateError = document.querySelector('#error').content;
   var templateSuccess = document.querySelector('#success').content;
   var main = document.querySelector('main');
-  var URL_UPLOAD = 'https://javascript.pages.academy/kekstagram';
-  var URL_LOAD = 'https://javascript.pages.academy/kekstagram/data';
+  var URL_UPLOAD = 'https://24.javascript.pages.academy/kekstagram';
+  var URL_LOAD = 'https://24.javascript.pages.academy/kekstagram/data';
   var TIMEOUT = 10000;
   var XHR_STATUS = 200;
 
